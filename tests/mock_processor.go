@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"micro-batcher/pkg/batcher"
+	"github.com/jattkaim/micro-batcher/pkg/batcher"
 )
 
 type MockBatchProcessor struct {

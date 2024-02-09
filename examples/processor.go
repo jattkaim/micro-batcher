@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"micro-batcher/pkg/batcher"
+	"github.com/jattkaim/micro-batcher/pkg/batcher"
 )
 
 // BasicProcessor is a simple implementation of a processor interface that our batcher would depend on.

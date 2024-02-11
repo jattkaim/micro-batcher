@@ -1,9 +1,8 @@
 package tests
 
-import (
-	"github.com/jattkaim/micro-batcher/pkg/batcher"
-)
+import "github.com/jattkaim/micro-batcher/pkg/batcher"
 
+// MockBatchProcessor is used to test batcher functionality with a mocked processor dependency
 type MockBatchProcessor struct {
 	ProcessFunc func(jobs []batcher.Job) ([]batcher.JobResult, error)
 }

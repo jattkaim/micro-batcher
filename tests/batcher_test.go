@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestProcess(t *testing.T) {
+func TestProcessWithBatchSize(t *testing.T) {
 	mp := &MockBatchProcessor{ProcessFunc: func(jobs []batcher.Job) ([]batcher.JobResult, error) {
 		if len(jobs) != 2 {
 			t.Errorf("Expected batch size of 2, got %d", len(jobs))
@@ -15,10 +15,28 @@ func TestProcess(t *testing.T) {
 	},
 	}
 
-	b := batcher.NewBatcher(mp, 2, 1*time.Second)
+	b := batcher.NewBatcher(mp, 2, 5*time.Second)
 
 	b.Add(batcher.Job{ID: "a"})
 	b.Add(batcher.Job{ID: "b"})
+
+	b.Shutdown()
+}
+
+func TestProcessWithFlushInterval(t *testing.T) {
+	processed := false
+	mp := &MockBatchProcessor{ProcessFunc: func(jobs []batcher.Job) ([]batcher.JobResult, error) {
+		processed = true
+		return make([]batcher.JobResult, len(jobs)), nil
+	},
+	}
+	b := batcher.NewBatcher(mp, 1, 100*time.Millisecond)
+	b.Add(batcher.Job{ID: "a"})
+	time.Sleep(110 * time.Millisecond)
+
+	if !processed {
+		t.Error("Expected jobs to be processed on flush interval")
+	}
 
 	b.Shutdown()
 }
@@ -33,24 +51,6 @@ func TestProcessFailure(t *testing.T) {
 
 	b.Add(batcher.Job{ID: "a"})
 	b.Add(batcher.Job{ID: "b"})
-
-	b.Shutdown()
-}
-
-func TestFlushInterval(t *testing.T) {
-	processed := false
-	mp := &MockBatchProcessor{ProcessFunc: func(jobs []batcher.Job) ([]batcher.JobResult, error) {
-		processed = true
-		return make([]batcher.JobResult, len(jobs)), nil
-	},
-	}
-	b := batcher.NewBatcher(mp, 1, 100*time.Millisecond)
-	b.Add(batcher.Job{ID: "a"})
-	time.Sleep(110 * time.Millisecond)
-
-	if !processed {
-		t.Error("Expected jobs to be processed on flush interval")
-	}
 
 	b.Shutdown()
 }

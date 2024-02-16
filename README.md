@@ -35,12 +35,14 @@ go get github.com/jattkaim/micro-batcher
 
    > Note: The `Start()` and `Stop()` methods are optional. Implement them if your processing logic requires initialization or cleanup.
 
+
 2. **Initialize the Batcher**: Create an instance of the `Batcher` by providing the implemented `batchProcessor`, a `batchSize`, and a `flushInterval`:
 
     ```go
     processor := &MyAwesomeBatchProcessor{}
     batcher := batcher.NewBatcher(processor, 10, 2 * time.Second)
     ```
+
 
 3. **Add Jobs to the Batcher**:
 
@@ -53,6 +55,7 @@ go get github.com/jattkaim/micro-batcher
     batcher.Add(job)
     ```
 
+
 4. **Reading the Results**: Ensure to read the results in a non-blocking manner or after all jobs have been added:
 
     ```go
@@ -62,6 +65,7 @@ go get github.com/jattkaim/micro-batcher
     ```
 
    > Note: Results will be sent back respectful to the `batchSize` or `flushInterval` that was defined.. Depending on your application's design, consider processing `batcher.Results` in a separate goroutine to avoid blocking if you're adding jobs and reading results concurrently.
+
 
 
 ### Examples
